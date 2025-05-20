@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF工具集</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF工具集</h1>
+            <p>快速处理您的PDF文件</p>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h2>PDF转Word</h2>
+                    <p>将PDF文件转换为可编辑的Word文档</p>
+                    <div class="upload-box">
+                        <form id="convert-form" enctype="multipart/form-data">
+                            <div class="upload-area" id="convert-drop-area">
+                                <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="convert-upload-icon">
+                                <p class="upload-text">拖放PDF文件到此处或</p>
+                                <input type="file" name="files" id="convert-file-input" accept=".pdf" multiple hidden>
+                                <button type="button" class="btn-select-file" id="convert-select-file-btn">选择文件</button>
+                                <p class="max-size-note">最大文件大小: 16MB/单文件</p>
+                                <div class="selected-files-info" id="convert-files-info" style="display: none;">
+                                    <p>已选择的文件:</p>
+                                    <ul id="convert-files-list"></ul>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-convert" id="convert-btn" disabled>开始转换</button>
+                        </form>
+                        <div class="progress-container" id="convert-progress-container" style="display: none;">
+                            <p>正在上传和转换文件...</p>
+                            <div class="progress-bar">
+                                <div class="progress" id="convert-progress"></div>
+                            </div>
+                            <p id="convert-progress-percentage">0%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h2>PDF合并</h2>
+                    <p>将多个PDF文件合并为一个文件</p>
+                    <a href="{{ url_for('merge_page') }}" class="btn-tool">开始合并</a>
+                </div>
+            </div>
+
+            <div class="features">
+                <h2>功能特点</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>快速处理</h3>
+                        <p>几秒钟内完成文件转换和合并</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>安全可靠</h3>
+                        <p>您的文件会在处理完成后自动删除</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>随时随地</h3>
+                        <p>在任何设备上使用，无需安装软件</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💯</div>
+                        <h3>完美保留格式</h3>
+                        <p>保持原始文档的布局和质量</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/convert.js') }}"></script>
+</body>
+</html> 

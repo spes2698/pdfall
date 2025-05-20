@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下载转换后的文件 - PDF转Word在线工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF转Word在线转换工具</h1>
+            <p>快速将您的PDF文件转换为可编辑的Word文档</p>
+        </header>
+
+        <main>
+            <div class="download-box">
+                <div class="success-icon">✓</div>
+                <h2>转换成功！</h2>
+                <p>您的PDF文件已成功转换为Word文档</p>
+                
+                <div class="file-info">
+                    <p>文件名: {{ original_name }}</p>
+                </div>
+                
+                <a href="{{ url_for('get_file', filename=filename) }}" class="btn-download">
+                    <span class="download-icon">⬇</span> 下载Word文档
+                </a>
+                
+                <div class="note">
+                    <p>注意: 为了保护您的隐私，文件仅保存24小时</p>
+                </div>
+                
+                <a href="{{ url_for('index') }}" class="btn-back">
+                    <span class="back-icon">⬅</span> 返回首页
+                </a>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 PDF转Word在线工具 | 技术支持</p>
+        </footer>
+    </div>
+</body>
+</html> 

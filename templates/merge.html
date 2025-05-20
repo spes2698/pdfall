@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF合并工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF合并工具</h1>
+            <p>快速将多个PDF文件合并为一个文件</p>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="upload-box">
+                <form id="merge-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="upload-icon">
+                        <p class="upload-text">拖放PDF文件到此处或</p>
+                        <input type="file" name="files" id="file-input" accept=".pdf" multiple hidden>
+                        <button type="button" class="btn-select-file" id="select-file-btn">选择文件</button>
+                        <p class="max-size-note">最大文件大小: 16MB</p>
+                        <div class="selected-files-info" id="files-info" style="display: none;">
+                            <p>已选择的文件:</p>
+                            <ul id="files-list"></ul>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-convert" id="merge-btn" disabled>开始合并</button>
+                </form>
+                <div class="progress-container" id="progress-container" style="display: none;">
+                    <p>正在上传和合并文件...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <p id="progress-percentage">0%</p>
+                </div>
+            </div>
+
+            <div class="features">
+                <h2>功能特点</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>快速合并</h3>
+                        <p>几秒钟内将多个PDF文件合并为一个</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>安全可靠</h3>
+                        <p>您的文件会在合并完成后自动删除</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>随时随地</h3>
+                        <p>在任何设备上使用，无需安装软件</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💯</div>
+                        <h3>保持原样</h3>
+                        <p>保持原始PDF文件的格式和质量</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/merge.js') }}"></script>
+</body>
+</html> 
