@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF拆分工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF拆分工具</h1>
+            <p>将PDF文件拆分为单页或提取指定页面</p>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="upload-box">
+                <form id="split-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="split-drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="split-upload-icon">
+                        <p class="upload-text">拖放PDF文件到此处或</p>
+                        <input type="file" name="file" id="split-file-input" accept=".pdf" hidden>
+                        <button type="button" class="btn-select-file" id="split-select-file-btn">选择文件</button>
+                        <p class="max-size-note">最大文件大小: 16MB</p>
+                        <div class="selected-file-info" id="split-file-info" style="display: none;">
+                            <p>已选择: <span id="split-file-name"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="split-options">
+                        <h3>拆分选项</h3>
+                        <div class="option-group">
+                            <label>
+                                <input type="radio" name="split_mode" value="all" checked> 
+                                拆分为单页PDF文件
+                            </label>
+                            <label>
+                                <input type="radio" name="split_mode" value="extract"> 
+                                提取指定页面
+                            </label>
+                            <div id="extract-pages-container" style="display: none;">
+                                <label for="pages">页码 (例如: 1,3,5-7):</label>
+                                <input type="text" id="pages" name="pages" placeholder="输入页码，用逗号分隔">
+                                <p class="note">页码从1开始，可以输入单页或范围</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-convert" id="split-btn" disabled>开始拆分</button>
+                </form>
+                <div class="progress-container" id="split-progress-container" style="display: none;">
+                    <p>正在上传和拆分文件...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="split-progress"></div>
+                    </div>
+                    <p id="split-progress-percentage">0%</p>
+                </div>
+            </div>
+
+            <div class="tip-info" style="margin-top:24px;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+
+            <div class="features">
+                <h2>功能特点</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>快速拆分</h3>
+                        <p>几秒钟内将PDF拆分为多个文件</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>安全可靠</h3>
+                        <p>您的文件会在处理完成后自动删除</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>随时随地</h3>
+                        <p>在任何设备上使用，无需安装软件</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💯</div>
+                        <h3>完美保留格式</h3>
+                        <p>保持原始文档的布局和质量</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/split.js') }}"></script>
+</body>
+</html> 

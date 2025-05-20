@@ -38,28 +38,75 @@ header p {
 
 /* 工具网格布局 */
 .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px 36px;
     margin-bottom: 40px;
 }
 
 .tool-card {
     background: white;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    width: 320px;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 32px 20px 28px 20px;
+    transition: box-shadow 0.2s;
+}
+.tool-card:hover {
+    box-shadow: 0 4px 24px rgba(52,152,219,0.18);
+}
+.tool-card .tool-icon {
+    font-size: 3.2em;
+    margin-bottom: 18px;
+    display: block;
+}
+.tool-card h2 {
+    font-size: 1.25em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2c3e50;
     text-align: center;
 }
-
-.tool-card h2 {
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
 .tool-card p {
     color: #7f8c8d;
-    margin-bottom: 20px;
+    font-size: 1.05em;
+    margin-bottom: 22px;
+    text-align: center;
+    min-height: 44px;
+}
+.tool-card .btn-tool, .tool-card .btn-convert, .tool-card .btn-select-file, .return-home-btn {
+    width: 80%;
+    max-width: 220px;
+    height: 44px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.08em;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+}
+.tool-card .btn-tool:hover, .tool-card .btn-convert:hover, .tool-card .btn-select-file:hover, .return-home-btn:hover {
+    background: #217dbb;
+    box-shadow: 0 4px 16px rgba(52,152,219,0.18);
+}
+
+/* 工具容器 */
+.tool-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
 }
 
 /* 上传区域样式 */
@@ -104,7 +151,7 @@ header p {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background 0.3s ease;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
 }
 
 .btn-select-file:hover,
@@ -161,7 +208,11 @@ header p {
     width: 0;
     height: 100%;
     background: #2ecc71;
-    transition: width 0.3s ease;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.progress-container p {
+    transition: color 0.3s;
 }
 
 /* 功能特点样式 */
@@ -224,21 +275,132 @@ footer {
     color: #7f8c8d;
 }
 
+/* 选项组样式 */
+.option-group {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.option-group label {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.option-group input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.option-group .note {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+.split-options {
+    margin-top: 20px;
+}
+
+.split-options h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+#extract-pages-container {
+    margin-top: 15px;
+    padding-left: 20px;
+}
+
 /* 响应式设计 */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-    
-    header h1 {
-        font-size: 2em;
-    }
-    
+@media (max-width: 1100px) {
     .tools-grid {
-        grid-template-columns: 1fr;
+        gap: 28px 0;
     }
-    
-    .feature-grid {
-        grid-template-columns: 1fr;
+    .tool-card {
+        width: 90vw;
+        max-width: 340px;
+    }
+}
+@media (max-width: 768px) {
+    .tools-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 22px 0;
+    }
+    .tool-card {
+        width: 98vw;
+        max-width: 98vw;
+        min-width: 0;
+        height: auto;
+        padding: 24px 8px 20px 8px;
+    }
+    .tool-card h2 {
+        font-size: 1.1em;
+    }
+    .tool-card p {
+        font-size: 0.98em;
+    }
+    .tool-card .btn-tool, .tool-card .btn-convert, .tool-card .btn-select-file, .return-home-btn {
+        font-size: 1em;
+        height: 40px;
+    }
+}
+
+.return-home-btn {
+    margin: 24px auto 0 auto;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.08em;
+    font-weight: 500;
+    cursor: pointer;
+    width: 180px;
+    height: 44px;
+    display: block;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+}
+.return-home-btn:hover {
+    background: #217dbb;
+    box-shadow: 0 4px 16px rgba(52,152,219,0.18);
+}
+
+/* 进度条动画 */
+.progress-bar, .progress {
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.progress-container p {
+    transition: color 0.3s;
+}
+.btn-select-file:active, .btn-convert:active, .btn-tool:active {
+    transform: scale(0.97);
+}
+@media (max-width: 600px) {
+    .btn-select-file, .btn-convert, .btn-tool {
+        font-size: 1.15em;
+        height: 48px;
+        padding: 12px 0;
+        border-radius: 8px;
+    }
+    .upload-area {
+        padding: 18px;
+    }
+    .option-group label, .option-group input, .option-group select {
+        font-size: 1.1em;
+    }
+    .selected-file-info, .selected-files-info {
+        font-size: 1.05em;
+        padding: 8px;
+    }
+    .progress-bar {
+        height: 18px;
     }
 } 

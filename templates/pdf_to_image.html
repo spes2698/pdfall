@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF转图片工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF转图片工具</h1>
+            <div class="tip-info" style="margin:18px 0 0 0;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+            <p>将PDF页面批量导出为高清图片，支持JPG/PNG格式</p>
+        </header>
+        <main>
+            <div class="upload-box">
+                <form id="pdf2img-form" enctype="multipart/form-data" method="post" action="/pdf_to_images">
+                    <div class="upload-area" id="pdf2img-drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="pdf2img-upload-icon">
+                        <p class="upload-text">拖放PDF文件到此处或</p>
+                        <input type="file" name="file" id="pdf2img-file-input" accept=".pdf" hidden>
+                        <button type="button" class="btn-select-file" id="pdf2img-select-file-btn">选择文件</button>
+                        <p class="max-size-note">最大文件大小: 16MB，仅支持PDF</p>
+                        <div class="selected-file-info" id="pdf2img-file-info" style="display: none;">
+                            <p>已选择: <span id="pdf2img-file-name"></span></p>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <label for="format">图片格式：</label>
+                        <select id="format" name="format">
+                            <option value="jpg">JPG</option>
+                            <option value="png">PNG</option>
+                        </select>
+                        <label for="dpi">DPI：</label>
+                        <input type="number" id="dpi" name="dpi" value="300" min="72" max="600">
+                    </div>
+                    <button type="submit" class="btn-convert" id="pdf2img-btn" disabled>导出图片</button>
+                </form>
+                <div class="progress-container" id="pdf2img-progress-container" style="display: none;">
+                    <p>正在上传和转换...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="pdf2img-progress"></div>
+                    </div>
+                    <p id="pdf2img-progress-percentage">0%</p>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/pdf2img.js') }}"></script>
+</body>
+</html> 

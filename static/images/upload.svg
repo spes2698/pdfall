@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#3f51b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload">
-  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-  <polyline points="17 8 12 3 7 8"></polyline>
-  <line x1="12" y1="3" x2="12" y2="15"></line>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M14,13 L14,17 C14,17.5522847 13.5522847,18 13,18 L11,18 C10.4477153,18 10,17.5522847 10,17 L10,13 L7,13 C6.59802652,13 6.23968441,12.7841725 6.0802139,12.4218281 C5.92074338,12.0594836 6.00253562,11.642019 6.29289322,11.3535534 L11.2928932,6.35355339 C11.6834175,5.96310906 12.3165825,5.96310906 12.7071068,6.35355339 L17.7071068,11.3535534 C17.9974644,11.642019 18.0792566,12.0594836 17.9197861,12.4218281 C17.7603156,12.7841725 17.4019735,13 17,13 L14,13 Z" fill="#3498db" fill-rule="nonzero"></path>
+        <path d="M4,20 L20,20 C20.5522847,20 21,20.4477153 21,21 C21,21.5522847 20.5522847,22 20,22 L4,22 C3.44771525,22 3,21.5522847 3,21 C3,20.4477153 3.44771525,20 4,20 Z" fill="#3498db" fill-rule="nonzero"></path>
+    </g>
 </svg> 

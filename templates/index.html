@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF工具集</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .tool-card .tool-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .tools-grid {
+            gap: 40px 30px;
+        }
+        @media (max-width: 768px) {
+            .tools-grid {
+                gap: 20px 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>PDF工具集</h1>
-            <p>快速处理您的PDF文件</p>
+            <div class="tip-info" style="margin:18px 0 0 0;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+            <p>一站式PDF处理平台，支持转换、合并、拆分、加密、压缩等多种功能</p>
         </header>
 
         <main>
@@ -26,37 +42,52 @@
 
             <div class="tools-grid">
                 <div class="tool-card">
+                    <span class="tool-icon">📝</span>
                     <h2>PDF转Word</h2>
-                    <p>将PDF文件转换为可编辑的Word文档</p>
-                    <div class="upload-box">
-                        <form id="convert-form" enctype="multipart/form-data">
-                            <div class="upload-area" id="convert-drop-area">
-                                <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="convert-upload-icon">
-                                <p class="upload-text">拖放PDF文件到此处或</p>
-                                <input type="file" name="files" id="convert-file-input" accept=".pdf" multiple hidden>
-                                <button type="button" class="btn-select-file" id="convert-select-file-btn">选择文件</button>
-                                <p class="max-size-note">最大文件大小: 16MB/单文件</p>
-                                <div class="selected-files-info" id="convert-files-info" style="display: none;">
-                                    <p>已选择的文件:</p>
-                                    <ul id="convert-files-list"></ul>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn-convert" id="convert-btn" disabled>开始转换</button>
-                        </form>
-                        <div class="progress-container" id="convert-progress-container" style="display: none;">
-                            <p>正在上传和转换文件...</p>
-                            <div class="progress-bar">
-                                <div class="progress" id="convert-progress"></div>
-                            </div>
-                            <p id="convert-progress-percentage">0%</p>
-                        </div>
-                    </div>
+                    <p>将PDF文件高质量转换为可编辑Word文档，保留原始排版和图片。</p>
+                    <a href="/upload" class="btn-tool">转换</a>
                 </div>
 
                 <div class="tool-card">
+                    <span class="tool-icon">📎</span>
                     <h2>PDF合并</h2>
-                    <p>将多个PDF文件合并为一个文件</p>
-                    <a href="{{ url_for('merge_page') }}" class="btn-tool">开始合并</a>
+                    <p>将多个PDF文件合并为一个，顺序自定义，便于整理资料。</p>
+                    <a href="{{ url_for('merge_page') }}" class="btn-tool">合并</a>
+                </div>
+                
+                <div class="tool-card">
+                    <span class="tool-icon">✂️</span>
+                    <h2>PDF拆分</h2>
+                    <p>将PDF拆分为单页或提取指定页面，支持范围选择。</p>
+                    <a href="{{ url_for('split_page') }}" class="btn-tool">拆分</a>
+                </div>
+                
+                <div class="tool-card">
+                    <span class="tool-icon">🔒</span>
+                    <h2>PDF加密解密</h2>
+                    <p>为PDF添加密码保护或移除密码，保障文档安全。</p>
+                    <a href="{{ url_for('security_page') }}" class="btn-tool">安全工具</a>
+                </div>
+                
+                <div class="tool-card">
+                    <span class="tool-icon">📉</span>
+                    <h2>PDF压缩</h2>
+                    <p>减小PDF文件体积，便于分享和存储，支持多种压缩等级。</p>
+                    <a href="{{ url_for('compress_page') }}" class="btn-tool">压缩</a>
+                </div>
+                
+                <div class="tool-card">
+                    <span class="tool-icon">🖼️</span>
+                    <h2>PDF转图片</h2>
+                    <p>将PDF页面批量导出为高清图片，支持JPG/PNG格式。</p>
+                    <a href="{{ url_for('pdf_to_image_page') }}" class="btn-tool">PDF转图片</a>
+                </div>
+                
+                <div class="tool-card">
+                    <span class="tool-icon">🗂️</span>
+                    <h2>图片转PDF</h2>
+                    <p>将多张图片合并为一个PDF，支持JPG/PNG/TIFF等格式。</p>
+                    <a href="{{ url_for('image_to_pdf_page') }}" class="btn-tool">图片转PDF</a>
                 </div>
             </div>
 
@@ -65,23 +96,23 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <div class="feature-icon">🚀</div>
-                        <h3>快速处理</h3>
-                        <p>几秒钟内完成文件转换和合并</p>
+                        <h3>极速处理</h3>
+                        <p>几秒钟内完成文件转换、合并、拆分等操作</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">🔒</div>
                         <h3>安全可靠</h3>
-                        <p>您的文件会在处理完成后自动删除</p>
+                        <p>所有文件处理后自动删除，保护您的隐私</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">📱</div>
-                        <h3>随时随地</h3>
-                        <p>在任何设备上使用，无需安装软件</p>
+                        <h3>多端适配</h3>
+                        <p>支持电脑、手机、平板等多种设备访问</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">💯</div>
-                        <h3>完美保留格式</h3>
-                        <p>保持原始文档的布局和质量</p>
+                        <h3>高质量输出</h3>
+                        <p>最大程度保留原始文档的布局和清晰度</p>
                     </div>
                 </div>
             </div>

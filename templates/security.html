@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF加密解密 - PDF工具集</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .security-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .security-tab {
+            padding: 10px 20px;
+            background: #f1f1f1;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .security-tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .security-content {
+            display: none;
+        }
+        
+        .security-content.active {
+            display: block;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF加密解密工具</h1>
+            <p>为PDF文件添加密码保护或移除密码</p>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <div class="security-options">
+                <div class="security-tab active" data-tab="encrypt">加密PDF</div>
+                <div class="security-tab" data-tab="decrypt">解密PDF</div>
+            </div>
+
+            <div class="security-content active" id="encrypt-content">
+                <div class="upload-box">
+                    <form id="encrypt-form" enctype="multipart/form-data">
+                        <div class="upload-area" id="encrypt-drop-area">
+                            <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="encrypt-upload-icon">
+                            <p class="upload-text">拖放PDF文件到此处或</p>
+                            <input type="file" name="file" id="encrypt-file-input" accept=".pdf" hidden>
+                            <button type="button" class="btn-select-file" id="encrypt-select-file-btn">选择文件</button>
+                            <p class="max-size-note">最大文件大小: 16MB</p>
+                            <div class="selected-file-info" id="encrypt-file-info" style="display: none;">
+                                <p>已选择: <span id="encrypt-file-name"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="option-group">
+                            <h3>加密选项</h3>
+                            <label for="encrypt-password">设置密码:</label>
+                            <input type="password" id="encrypt-password" name="password" class="password-input" placeholder="输入密码" required>
+                        </div>
+
+                        <button type="submit" class="btn-convert" id="encrypt-btn" disabled>加密PDF</button>
+                    </form>
+                    <div class="progress-container" id="encrypt-progress-container" style="display: none;">
+                        <p>正在上传和加密文件...</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="encrypt-progress"></div>
+                        </div>
+                        <p id="encrypt-progress-percentage">0%</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="security-content" id="decrypt-content">
+                <div class="upload-box">
+                    <form id="decrypt-form" enctype="multipart/form-data">
+                        <div class="upload-area" id="decrypt-drop-area">
+                            <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="decrypt-upload-icon">
+                            <p class="upload-text">拖放PDF文件到此处或</p>
+                            <input type="file" name="file" id="decrypt-file-input" accept=".pdf" hidden>
+                            <button type="button" class="btn-select-file" id="decrypt-select-file-btn">选择文件</button>
+                            <p class="max-size-note">最大文件大小: 16MB</p>
+                            <div class="selected-file-info" id="decrypt-file-info" style="display: none;">
+                                <p>已选择: <span id="decrypt-file-name"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="option-group">
+                            <h3>解密选项</h3>
+                            <label for="decrypt-password">密码:</label>
+                            <input type="password" id="decrypt-password" name="password" class="password-input" placeholder="输入PDF密码" required>
+                        </div>
+
+                        <button type="submit" class="btn-convert" id="decrypt-btn" disabled>解密PDF</button>
+                    </form>
+                    <div class="progress-container" id="decrypt-progress-container" style="display: none;">
+                        <p>正在上传和解密文件...</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="decrypt-progress"></div>
+                        </div>
+                        <p id="decrypt-progress-percentage">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="features">
+                <h2>功能特点</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>安全加密</h3>
+                        <p>使用PDF标准加密算法保护文档</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔓</div>
+                        <h3>便捷解密</h3>
+                        <p>轻松移除已知密码的文档保护</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>随时随地</h3>
+                        <p>在任何设备上使用，无需安装软件</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3>隐私保障</h3>
+                        <p>您的密码和文件不会被保存</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-info" style="margin-top:24px;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/security.js') }}"></script>
+</body>
+</html> 

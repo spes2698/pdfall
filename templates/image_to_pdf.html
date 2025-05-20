@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片转PDF工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>图片转PDF工具</h1>
+            <div class="tip-info" style="margin:18px 0 0 0;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+            <p>将多张图片合并为一个PDF，支持JPG/PNG/TIFF等格式</p>
+        </header>
+        <main>
+            <div class="upload-box">
+                <form id="img2pdf-form" enctype="multipart/form-data" method="post" action="/images_to_pdf">
+                    <div class="upload-area" id="img2pdf-drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="img2pdf-upload-icon">
+                        <p class="upload-text">拖放图片文件到此处或</p>
+                        <input type="file" name="files" id="img2pdf-file-input" accept=".jpg,.jpeg,.png,.tiff" multiple hidden>
+                        <button type="button" class="btn-select-file" id="img2pdf-select-file-btn">选择图片</button>
+                        <p class="max-size-note">最大单文件16MB，仅支持JPG/PNG/TIFF</p>
+                        <div class="selected-files-info" id="img2pdf-files-info" style="display: none;">
+                            <p>已选择的图片:</p>
+                            <ul id="img2pdf-files-list"></ul>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-convert" id="img2pdf-btn" disabled>图片转PDF</button>
+                </form>
+                <div class="progress-container" id="img2pdf-progress-container" style="display: none;">
+                    <p>正在上传和转换...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="img2pdf-progress"></div>
+                    </div>
+                    <p id="img2pdf-progress-percentage">0%</p>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/img2pdf.js') }}"></script>
+</body>
+</html> 

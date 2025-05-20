@@ -3,42 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>下载转换后的文件 - PDF转Word在线工具</title>
+    <title>下载转换结果 - PDF工具集</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>PDF转Word在线转换工具</h1>
-            <p>快速将您的PDF文件转换为可编辑的Word文档</p>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF转Word工具</h1>
+            <p>将PDF文件高质量转换为可编辑Word文档，保留原始排版和图片。</p>
         </header>
-
         <main>
-            <div class="download-box">
-                <div class="success-icon">✓</div>
-                <h2>转换成功！</h2>
-                <p>您的PDF文件已成功转换为Word文档</p>
-                
-                <div class="file-info">
-                    <p>文件名: {{ original_name }}</p>
+            <div class="upload-box" style="max-width:480px;margin:40px auto 0 auto;">
+                <div class="download-box" style="text-align:center;padding:40px 30px 32px 30px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                    <div class="success-icon" style="font-size:2.8em;color:#2ecc71;margin-bottom:18px;">✓</div>
+                    <h2 style="color:#2c3e50;margin-bottom:10px;">转换成功！</h2>
+                    <p style="color:#7f8c8d;margin-bottom:18px;">您的PDF文件已成功转换为Word文档</p>
+                    <div class="file-info" style="margin-bottom:18px;">
+                        <p>文件名: <span style="color:#2980b9;">{{ original_name }}</span></p>
+                    </div>
+                    <a href="{{ url_for('get_file', filename=filename) }}" class="btn-convert" style="display:inline-block;width:220px;">下载Word文档</a>
+                    <div class="note" style="margin:18px 0 10px 0;color:#b2bec3;font-size:0.98em;">
+                        注意: 为了保护您的隐私，文件仅保存24小时
                 </div>
-                
-                <a href="{{ url_for('get_file', filename=filename) }}" class="btn-download">
-                    <span class="download-icon">⬇</span> 下载Word文档
-                </a>
-                
-                <div class="note">
-                    <p>注意: 为了保护您的隐私，文件仅保存24小时</p>
+                    <a href="/" class="btn-tool" style="margin-top:10px;width:180px;">返回首页</a>
                 </div>
-                
-                <a href="{{ url_for('index') }}" class="btn-back">
-                    <span class="back-icon">⬅</span> 返回首页
-                </a>
             </div>
         </main>
-
         <footer>
-            <p>&copy; 2023 PDF转Word在线工具 | 技术支持</p>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
         </footer>
     </div>
 </body>

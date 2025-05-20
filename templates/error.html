@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出错了</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>出错了</h1>
+        </header>
+        <main>
+            <div class="alert" style="margin:40px 0; font-size:1.2em; text-align:center;">{{ message }}</div>
+        </main>
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF压缩工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF压缩工具</h1>
+            <p>减小PDF文件体积，便于分享和存储</p>
+        </header>
+        <main>
+            <div class="upload-box">
+                <form id="compress-form" enctype="multipart/form-data" method="post" action="/compress_pdf">
+                    <div class="upload-area" id="compress-drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="compress-upload-icon">
+                        <p class="upload-text">拖放PDF文件到此处或</p>
+                        <input type="file" name="file" id="compress-file-input" accept=".pdf" hidden>
+                        <button type="button" class="btn-select-file" id="compress-select-file-btn">选择文件</button>
+                        <p class="max-size-note">最大文件大小: 64MB，仅支持PDF</p>
+                        <div class="selected-file-info" id="compress-file-info" style="display: none;">
+                            <p>已选择: <span id="compress-file-name"></span></p>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <label for="quality">压缩模式：</label>
+                        <select id="quality" name="quality">
+                            <option value="default">推荐（均衡）</option>
+                            <option value="screen" selected>极致压缩（最小文件）</option>
+                            <option value="ebook">中等压缩（适合阅读）</option>
+                            <option value="printer">高质量（适合打印）</option>
+                            <option value="prepress">保留细节（出版/印刷）</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-convert" id="compress-btn" disabled>压缩</button>
+                </form>
+                <div id="compress-progress-container" class="progress-container" style="display:none;">
+                    <p style="margin-bottom:8px;color:#3498db;font-weight:bold;">正在上传...</p>
+                    <div class="progress-bar" style="background:#e0e0e0;border-radius:8px;overflow:hidden;">
+                        <div id="compress-progress" class="progress" style="width:0%;background:#3498db;height:20px;transition:width 0.4s;"></div>
+                    </div>
+                    <span id="compress-progress-percentage">0%</span>
+                </div>
+            </div>
+            <div class="tip-info" style="margin-top:24px;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+        </main>
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/compress.js') }}"></script>
+</body>
+</html> 

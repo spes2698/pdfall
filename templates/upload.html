@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF转Word工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="return-home-btn">返回PDF工具集首页</a>
+            <h1>PDF转Word工具</h1>
+            <div class="tip-info" style="margin:18px 0 0 0;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
+            <p>将PDF文件高质量转换为可编辑Word文档，保留原始排版和图片。</p>
+        </header>
+        <main>
+            <div class="upload-box">
+                <form id="upload-form" enctype="multipart/form-data" method="post" action="/upload">
+                    <div class="upload-area" id="upload-drop-area">
+                        <img src="{{ url_for('static', filename='images/upload.svg') }}" alt="上传图标" class="upload-icon" id="upload-upload-icon">
+                        <p class="upload-text">拖放PDF文件到此处或</p>
+                        <input type="file" name="file" id="upload-file-input" accept=".pdf" hidden>
+                        <button type="button" class="btn-select-file" id="upload-select-file-btn">选择文件</button>
+                        <p class="max-size-note">最大文件大小: 16MB，仅支持PDF</p>
+                        <div class="selected-file-info" id="upload-file-info" style="display: none;">
+                            <p>已选择: <span id="upload-file-name"></span></p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-convert" id="upload-btn" disabled>转换</button>
+                </form>
+                <div class="progress-container" id="upload-progress-container" style="display: none;">
+                    <p>正在上传和转换...</p>
+                    <div class="progress-bar">
+                        <div class="progress" id="upload-progress"></div>
+                    </div>
+                    <p id="upload-progress-percentage">0%</p>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2023 PDF工具集 | 技术支持</p>
+        </footer>
+    </div>
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+</body>
+</html> 
