@@ -25,8 +25,16 @@
     <div class="container">
         <header>
             <h1>PDF工具集</h1>
+            <div class="donate-section" style="display:flex;flex-direction:column;align-items:center;justify-content:center;margin:32px 0 0 0;">
+                <div style="font-weight:bold;font-size:20px;margin-bottom:12px;">扫码投喂支持本网站</div>
+                <img id="alipay-qr" src="" alt="支付宝收款二维码" style="max-width:240px;width:80vw;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);margin-bottom:14px;" />
+                <div id="alipay-qr-tip" style="color:#e74c3c;font-size:14px;display:none;margin-bottom:8px;">二维码加载失败，请刷新页面或稍后重试</div>
+                <div style="max-width:420px;text-align:center;font-size:16px;line-height:2;margin-top:2px;word-break:break-all;">
+                    <span style="font-weight:bold;color:#e67e22;font-size:17px;background:rgba(255,236,179,0.85);padding:6px 14px;border-radius:10px;box-shadow:0 1px 6px rgba(230,126,34,0.08);display:inline-block;letter-spacing:1px;">本网站是公益网站，运营成本均来自用户捐款扫码，超出所需运营成本的用户捐款将全部被用于乡村儿童教育事业。</span>
+                </div>
+            </div>
             <div class="tip-info" style="margin:18px 0 0 0;text-align:center;font-size:18px;font-weight:bold;color:#3498db;">⏳ 请耐心等待下载窗口弹出，预计需要等待30-60秒，祝您天天开心 😊</div>
-            <p>一站式PDF处理平台，支持转换、合并、拆分、加密、压缩等多种功能</p>
+            <p>一站式PDF处理平台，支持PDF转换、合并、拆分、加密、压缩和JPG压缩等多种功能</p>
         </header>
 
         <main>
@@ -89,6 +97,13 @@
                     <p>将多张图片合并为一个PDF，支持JPG/PNG/TIFF等格式。</p>
                     <a href="{{ url_for('image_to_pdf_page') }}" class="btn-tool">图片转PDF</a>
                 </div>
+
+                <div class="tool-card">
+                    <span class="tool-icon">🗜️</span>
+                    <h2>JPG压缩</h2>
+                    <p>压缩JPG图片，减小体积，便于分享和存储。</p>
+                    <a href="/jpg_compress" class="btn-tool">JPG压缩</a>
+                </div>
             </div>
 
             <div class="features">
@@ -116,8 +131,9 @@
                     </div>
                 </div>
             </div>
-        </main>
 
+            </div>
+        </main>
         <footer>
             <p>&copy; 2023 PDF工具集 | 技术支持</p>
         </footer>
@@ -125,5 +141,58 @@
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/convert.js') }}"></script>
+    <script>
+        function selectFunction(functionType) {
+            document.getElementById('functionType').value = functionType;
+            const buttons = document.querySelectorAll('.function-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 更新文件类型提示
+            const fileTypeHint = document.getElementById('fileTypeHint');
+            switch(functionType) {
+                case 'pdf2word':
+                    fileTypeHint.textContent = '支持的文件类型：PDF';
+                    break;
+                case 'pdf2excel':
+                    fileTypeHint.textContent = '支持的文件类型：PDF';
+                    break;
+                case 'pdf2ppt':
+                    fileTypeHint.textContent = '支持的文件类型：PDF';
+                    break;
+                case 'pdf2image':
+                    fileTypeHint.textContent = '支持的文件类型：PDF';
+                    break;
+                case 'word2pdf':
+                    fileTypeHint.textContent = '支持的文件类型：DOC, DOCX';
+                    break;
+                case 'excel2pdf':
+                    fileTypeHint.textContent = '支持的文件类型：XLS, XLSX';
+                    break;
+                case 'ppt2pdf':
+                    fileTypeHint.textContent = '支持的文件类型：PPT, PPTX';
+                    break;
+                case 'compress_jpg':
+                    fileTypeHint.textContent = '支持的文件类型：JPG, JPEG';
+                    break;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/generate_alipay_qr', {method: 'POST'})
+              .then(res => res.json())
+              .then(data => {
+                if(data.success) {
+                  document.getElementById('alipay-qr').src = 'data:image/png;base64,' + data.img_base64;
+                  document.getElementById('alipay-qr-tip').style.display = 'none';
+                } else {
+                  document.getElementById('alipay-qr-tip').style.display = '';
+                }
+              })
+              .catch(() => {
+                document.getElementById('alipay-qr-tip').style.display = '';
+              });
+        });
+    </script>
 </body>
 </html> 

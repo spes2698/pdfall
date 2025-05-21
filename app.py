@@ -15,6 +15,16 @@ from pdf_tools.pdf_operations.operations import (
     pdf_to_images,
     images_to_pdf
 )
+from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+from PIL import Image
+import io
+import base64
+import qrcode
+from alipay.aop.api.AlipayClientConfig import AlipayClientConfig
+from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient
+from alipay.aop.api.request.AlipayTradePrecreateRequest import AlipayTradePrecreateRequest
+from alipay_config import ALIPAY_APP_ID, ALIPAY_PRIVATE_KEY, ALIPAY_PUBLIC_KEY
 
 # 配置日志
 logging.basicConfig(level=logging.DEBUG)
@@ -22,14 +32,32 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
 app.config['CONVERTED_FOLDER'] = 'converted'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf', 'jpg', 'jpeg', 'png', 'tiff'}
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024  # 64MB
+app.config['FILE_EXPIRY'] = 20  # 文件保存20分钟后自动销毁
 
 # 确保上传和转换目录存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['CONVERTED_FOLDER'], exist_ok=True)
+
+# 清理过期文件的任务
+def cleanup_expired_files():
+    with app.app_context():
+        current_time = datetime.now()
+        for filename in os.listdir(app.config['UPLOAD_FOLDER']):
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            if os.path.isfile(file_path):
+                file_modified_time = datetime.fromtimestamp(os.path.getmtime(file_path))
+                if (current_time - file_modified_time).total_seconds() > app.config['FILE_EXPIRY'] * 60:
+                    os.remove(file_path)
+                    print(f"已删除过期文件: {filename}")
+
+# 启动定时清理任务
+scheduler = BackgroundScheduler()
+scheduler.add_job(cleanup_expired_files, 'interval', minutes=10)
+scheduler.start()
 
 def allowed_file(filename, extensions=None):
     """检查文件扩展名是否被允许"""
@@ -321,39 +349,29 @@ def compress_pdf_route():
     try:
         if 'file' not in request.files:
             return jsonify({'success': False, 'message': '没有选择文件'})
-        
         file = request.files['file']
-        
         if file.filename == '':
             return jsonify({'success': False, 'message': '没有选择文件'})
-        
         if not allowed_file(file.filename, {'pdf'}):
             return jsonify({'success': False, 'message': '只允许上传PDF文件'})
-        
         # 获取压缩质量
         quality = request.form.get('quality', 'default')
-        
         # 保存上传的文件
         original_filename = secure_filename(file.filename)
         unique_id = str(uuid.uuid4())
         pdf_filename = f"{unique_id}_{original_filename}"
         pdf_path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename)
         file.save(pdf_path)
-        
         # 压缩PDF
         output_filename = f"compressed_{unique_id}.pdf"
         output_path = os.path.join(app.config['CONVERTED_FOLDER'], output_filename)
-        
         success = compress_pdf(pdf_path, output_path, quality=quality)
-        
         if success:
             # 获取压缩前后的文件大小
             original_size = os.path.getsize(pdf_path)
             compressed_size = os.path.getsize(output_path)
-            
             # 计算压缩比例
             compression_ratio = 100 - (compressed_size / original_size * 100) if original_size > 0 else 0
-            
             return jsonify({
                 'success': True,
                 'download_url': url_for('get_file', filename=output_filename),
@@ -600,6 +618,162 @@ def run_tests():
 @app.errorhandler(413)
 def request_entity_too_large(error):
     return render_template('error.html', message='上传的文件过大，最大支持64MB'), 413
+
+def compress_jpg(file_path, quality=85):
+    """压缩JPG图片"""
+    try:
+        # 打开图片
+        img = Image.open(file_path)
+        
+        # 如果是PNG，转换为JPG
+        if img.format == 'PNG':
+            img = img.convert('RGB')
+        
+        # 创建输出文件路径
+        output_path = os.path.splitext(file_path)[0] + '_compressed.jpg'
+        
+        # 保存压缩后的图片
+        img.save(output_path, 'JPEG', quality=quality, optimize=True)
+        
+        return output_path
+    except Exception as e:
+        print(f"压缩图片时出错: {str(e)}")
+        return None
+
+@app.route('/convert', methods=['POST'])
+def convert():
+    if 'file' not in request.files:
+        return jsonify({'error': '没有选择文件'}), 400
+    
+    file = request.files['file']
+    function_type = request.form.get('functionType')
+    
+    if file.filename == '':
+        return jsonify({'error': '没有选择文件'}), 400
+    
+    if not allowed_file(file.filename):
+        return jsonify({'error': '不支持的文件类型'}), 400
+    
+    try:
+        # 保存上传的文件
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # 根据功能类型处理文件
+        if function_type == 'compress_jpg':
+            if not filename.lower().endswith(('.jpg', '.jpeg')):
+                return jsonify({'error': '请上传JPG或JPEG格式的图片'}), 400
+            output_path = compress_jpg(file_path)
+            if not output_path:
+                return jsonify({'error': '图片压缩失败'}), 500
+            return send_file(output_path, as_attachment=True)
+        elif function_type == 'pdf2word':
+            output_path = convert_pdf_to_word(file_path)
+        elif function_type == 'pdf2excel':
+            output_path = convert_pdf_to_excel(file_path)
+        elif function_type == 'pdf2ppt':
+            output_path = convert_pdf_to_ppt(file_path)
+        elif function_type == 'pdf2image':
+            output_path = convert_pdf_to_image(file_path)
+        elif function_type == 'word2pdf':
+            output_path = convert_word_to_pdf(file_path)
+        elif function_type == 'excel2pdf':
+            output_path = convert_excel_to_pdf(file_path)
+        elif function_type == 'ppt2pdf':
+            output_path = convert_ppt_to_pdf(file_path)
+        else:
+            return jsonify({'error': '不支持的功能类型'}), 400
+        
+        if not output_path:
+            return jsonify({'error': '转换失败'}), 500
+        
+        return send_file(output_path, as_attachment=True)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        # 清理临时文件
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        if 'output_path' in locals() and os.path.exists(output_path):
+            os.remove(output_path)
+
+@app.route('/jpg_compress')
+def jpg_compress_page():
+    return render_template('jpg_compress.html')
+
+@app.route('/compress_jpg', methods=['POST'])
+def compress_jpg_route():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'message': '没有选择文件'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'message': '没有选择文件'}), 400
+        if not allowed_file(file.filename, {'jpg', 'jpeg'}):
+            return jsonify({'success': False, 'message': '只允许上传JPG/JPEG图片'}), 400
+        # 获取压缩质量
+        quality = int(request.form.get('quality', '85'))
+        # 保存上传的文件
+        original_filename = secure_filename(file.filename)
+        unique_id = str(uuid.uuid4())
+        jpg_filename = f"{unique_id}_{original_filename}"
+        jpg_path = os.path.join(app.config['UPLOAD_FOLDER'], jpg_filename)
+        file.save(jpg_path)
+        # 压缩JPG
+        output_filename = f"compressed_{unique_id}.jpg"
+        output_path = os.path.join(app.config['CONVERTED_FOLDER'], output_filename)
+        try:
+            img = Image.open(jpg_path)
+            if img.mode in ('RGBA', 'P'):  # 转换为RGB
+                img = img.convert('RGB')
+            img.save(output_path, 'JPEG', quality=quality, optimize=True)
+        except Exception as e:
+            return jsonify({'success': False, 'message': f'图片压缩失败: {str(e)}'}), 500
+        finally:
+            try:
+                os.remove(jpg_path)
+            except Exception:
+                pass
+        return send_from_directory(app.config['CONVERTED_FOLDER'], output_filename, as_attachment=True)
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'压缩JPG时出错: {str(e)}'}), 500
+
+@app.route('/api/generate_alipay_qr', methods=['POST'])
+def generate_alipay_qr():
+    alipay_client_config = AlipayClientConfig()
+    alipay_client_config.server_url = "https://openapi.alipay.com/gateway.do"
+    alipay_client_config.app_id = ALIPAY_APP_ID
+    # 确保私钥格式正确
+    alipay_client_config.app_private_key = ALIPAY_PRIVATE_KEY.replace('\\n', '\n')
+    alipay_client_config.alipay_public_key = ALIPAY_PUBLIC_KEY.replace('\\n', '\n')
+
+    client = DefaultAlipayClient(alipay_client_config)
+    out_trade_no = str(uuid.uuid4())
+    request_obj = AlipayTradePrecreateRequest()
+    request_obj.biz_content = {
+        "out_trade_no": out_trade_no,
+        "total_amount": "0.01",
+        "subject": "公益捐款-乡村儿童教育",
+        "body": "超出运营成本部分将用于乡村儿童教育",
+        "timeout_express": "30m"
+    }
+    try:
+        response = client.execute(request_obj)
+        if 'qr_code' in response:
+            # 生成二维码图片并转base64
+            qr_url = response['qr_code']
+            qr_img = qrcode.make(qr_url)
+            buf = io.BytesIO()
+            qr_img.save(buf, format='PNG')
+            img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+            return jsonify({"success": True, "img_base64": img_base64, "img_type": "png"})
+        else:
+            return jsonify({"success": False, "message": "未获取到二维码链接"})
+    except Exception as e:
+        print(e)
+        return jsonify({"success": False, "message": f"二维码生成失败: {str(e)}"})
 
 if __name__ == '__main__':
     app.run(debug=True) 
